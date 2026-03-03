@@ -17,3 +17,8 @@ temp/
 
 # OS
 .DS_Store
+
+# PyInstaller
+build/
+dist/
+*.spec

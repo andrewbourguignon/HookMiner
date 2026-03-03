@@ -55,3 +55,5 @@ The easiest and most powerful way to use HookMiner is through its beautiful Loca
 
 ## License
 MIT License
+
+# source venv/bin/activate && python app.py

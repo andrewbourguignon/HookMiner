@@ -2,3 +2,5 @@ apify-client
 yt-dlp
 pandas
 google-genai
+pywebview
+pyinstaller

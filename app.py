@@ -4,6 +4,8 @@ import queue
 import threading
 from flask import Flask, render_template, request, Response, send_file, jsonify
 from main import run_pipeline
+import platform
+import subprocess
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hookminer_secret'
@@ -101,10 +103,24 @@ def stream():
 
 @app.route('/download')
 def download():
-    file_path = os.path.join(os.getcwd(), 'data', 'proven_hooks.csv')
+    documents_dir = os.path.expanduser("~/Documents/HookMiner/data")
+    file_path = os.path.join(documents_dir, 'proven_hooks.csv')
     if os.path.exists(file_path):
         return send_file(file_path, as_attachment=True)
     return "No CSV file generated yet.", 404
+
+@app.route('/open_data')
+def open_data():
+    documents_dir = os.path.expanduser("~/Documents/HookMiner/data")
+    if os.path.exists(documents_dir):
+        if platform.system() == "Darwin":
+            subprocess.run(["open", documents_dir])
+        elif platform.system() == "Windows":
+            os.startfile(documents_dir)
+        else:
+            subprocess.run(["xdg-open", documents_dir])
+        return jsonify({"status": "opened"})
+    return jsonify({"error": "Data directory does not exist yet.", "status": "error"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

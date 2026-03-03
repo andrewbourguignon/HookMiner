@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const runBtn = document.getElementById('runBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    const openDataBtn = document.getElementById('openDataBtn');
     const terminal = document.getElementById('terminal');
     const btnText = document.querySelector('.btn-text');
     const btnLoader = document.querySelector('.btn-loader');
@@ -80,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnText.textContent = 'Mining in Progress...';
         btnLoader.classList.remove('hidden');
         downloadBtn.classList.add('hidden');
+        openDataBtn.classList.add('hidden');
         terminal.innerHTML = ''; // Clear terminal
 
         try {
@@ -119,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     eventSource.close();
                     appendLog('Pipeline finished. Ready for download.', 'success');
                     downloadBtn.classList.remove('hidden');
+                    openDataBtn.classList.remove('hidden');
                     resetUI();
                 } else if (event.data.trim() !== '') {
                     // Check if error
@@ -145,5 +148,22 @@ document.addEventListener('DOMContentLoaded', () => {
         runBtn.disabled = false;
         btnText.textContent = 'Start Extraction Pipeline';
         btnLoader.classList.add('hidden');
+    }
+
+    if (openDataBtn) {
+        openDataBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                const response = await fetch('/open_data');
+                const data = await response.json();
+                if (!response.ok) {
+                    appendLog(`ERROR: ${data.error}`, 'error');
+                } else {
+                    appendLog('Opened Data folder in Finder.', 'success');
+                }
+            } catch (error) {
+                appendLog(`NETWORK ERROR: ${error.message}`, 'error');
+            }
+        });
     }
 });

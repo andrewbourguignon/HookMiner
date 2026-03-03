@@ -6,8 +6,9 @@ def export_to_csv(hooks, filename="proven_hooks.csv"):
     Appends new hooks to the specified CSV file.
     Hooks is a list of dictionaries with metadata and the extracted hook.
     """
-    os.makedirs('data', exist_ok=True)
-    filepath = os.path.join("data", filename)
+    documents_dir = os.path.expanduser("~/Documents/HookMiner/data")
+    os.makedirs(documents_dir, exist_ok=True)
+    filepath = os.path.join(documents_dir, filename)
     
     df = pd.DataFrame(hooks)
     
