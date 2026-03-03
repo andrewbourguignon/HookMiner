@@ -23,39 +23,38 @@ TARGET_VIDEOS = [
 # The minimum number of views a video needs to be transcribed
 MIN_VIEWS = 1000000
 
-def main():
+def run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_views):
     print("Starting HookMiner execution...")
     
-    if not os.getenv("APIFY_API_TOKEN"):
-        os.environ["APIFY_API_TOKEN"] = getpass.getpass("\nEnter your Apify API Token (input hidden): ")
+    os.environ["APIFY_API_TOKEN"] = apify_token
+    os.environ["GEMINI_API_KEY"] = gemini_key
         
-    if not os.getenv("GEMINI_API_KEY"):
-        os.environ["GEMINI_API_KEY"] = getpass.getpass("Enter your Gemini API Key (input hidden): ")
-        
-    print(f"Target handles: {TARGET_HANDLES}")
+    print(f"Target handles: {target_handles}")
+    if target_videos:
+        print(f"Target videos: {target_videos}")
     
     # 1. Scan handles (limit to Top 10 recent videos each for speed)
     print("\n--- PHASE 1: SCANNING HANDLES ---")
-    videos = scan_handles(TARGET_HANDLES, max_videos_per_handle=10)
-    print(f"Total videos scanned: {len(videos)}")
+    videos = []
+    if target_handles:
+        videos = scan_handles(target_handles, max_videos_per_handle=10)
+        print(f"Total videos scanned: {len(videos)}")
     
-    if not videos:
-        print("No videos found. Exiting.")
-        return
-
     # 2. Filter videos
-    print(f"\n--- PHASE 2: FILTERING VIRAL VIDEOS (>={MIN_VIEWS} Views) ---")
-    viral_videos = filter_videos(videos, min_views=MIN_VIEWS)
+    viral_videos = []
+    if videos:
+        print(f"\n--- PHASE 2: FILTERING VIRAL VIDEOS (>={min_views} Views) ---")
+        viral_videos = filter_videos(videos, min_views=min_views)
     
     # 2b. Add the forced TARGET_VIDEOS that bypass the filter
-    if TARGET_VIDEOS:
-        print(f"\n--- PHASE 2b: INJECTING {len(TARGET_VIDEOS)} SPECIFIC TARGET VIDEOS ---")
+    if target_videos:
+        print(f"\n--- PHASE 2b: INJECTING {len(target_videos)} SPECIFIC TARGET VIDEOS ---")
         # We can re-use the scanner logic on specific URLs, which will fetch their metadata
-        specific_videos = scan_handles(TARGET_VIDEOS, max_videos_per_handle=1)
+        specific_videos = scan_handles(target_videos, max_videos_per_handle=1)
         viral_videos.extend(specific_videos)
         
     if not viral_videos:
-        print("No viral videos found matching the criteria. Exiting.")
+        print("No videos found matching the criteria. Exiting.")
         return
         
     # 3. Transcribe and extract hooks
@@ -89,10 +88,23 @@ def main():
     print("\n--- PHASE 4: EXPORTING DATA ---")
     if hooks_data:
         export_to_csv(hooks_data, filename="proven_hooks.csv")
+        print("Successfully exported hooks to data/proven_hooks.csv")
     else:
         print("No hooks extracted. Nothing to export.")
         
     print("\nHookMiner execution completed.")
+
+def main():
+    # CLI Mode compatibility
+    apify_token = os.getenv("APIFY_API_TOKEN")
+    if not apify_token:
+        apify_token = getpass.getpass("\nEnter your Apify API Token (input hidden): ")
+        
+    gemini_key = os.getenv("GEMINI_API_KEY")
+    if not gemini_key:
+        gemini_key = getpass.getpass("Enter your Gemini API Key (input hidden): ")
+        
+    run_pipeline(apify_token, gemini_key, TARGET_HANDLES, TARGET_VIDEOS, MIN_VIEWS)
 
 if __name__ == "__main__":
     main()

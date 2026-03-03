@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HookMiner OS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Load Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-orbs"></div>
+    
+    <div class="container">
+        <header>
+            <h1 class="gradient-text">HookMiner ⛏️</h1>
+            <p>Mine viral real estate hooks into actionable data.</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Configuration Panel -->
+            <div class="glass-panel config-panel">
+                <h2>Configuration</h2>
+                
+                <div class="input-group">
+                    <label>Apify API Token</label>
+                    <input type="password" id="apifyToken" placeholder="apify_api_..." autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label>Gemini API Key</label>
+                    <input type="password" id="geminiKey" placeholder="AIza..." autocomplete="off">
+                </div>
+
+                <div class="input-group">
+                    <label>Target Profiles (One per line)</label>
+                    <textarea id="targetHandles" rows="4" placeholder="https://www.instagram.com/tatlondono/&#10;https://www.youtube.com/@RyanSerhant"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Bypass URLs (Force Specific Videos)</label>
+                    <textarea id="targetVideos" rows="3" placeholder="https://www.instagram.com/p/Example/"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label>Minimum View Filter</label>
+                    <input type="number" id="minViews" value="1000000" step="10000">
+                </div>
+
+                <button id="runBtn" class="primary-btn">
+                    <span class="btn-text">Start Extraction Pipeline</span>
+                    <span class="btn-loader hidden"></span>
+                </button>
+            </div>
+
+            <!-- Terminal Output Panel -->
+            <div class="glass-panel terminal-panel">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="terminal-title">Console Output</span>
+                    <a href="/download" id="downloadBtn" class="download-btn hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Download CSV
+                    </a>
+                </div>
+                <div id="terminal" class="terminal-body">
+                    <div class="log-line system-msg">Ready. Enter API keys and configure targets to begin.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

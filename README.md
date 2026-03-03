@@ -31,22 +31,23 @@ The extracted hooks are exported directly to a CSV, allowing content creators to
    pip install -r requirements.txt
    ```
 
-3. **Run the script:**
-   The script will securely prompt you for your API keys when run, ensuring they are never saved in any project files.
-   - **GEMINI_API_KEY**: Get a free key from [Google AI Studio](https://aistudio.google.com/).
-   - **APIFY_API_TOKEN**: Create a free account at [Apify](https://apify.com) and get your personal API token.
+3. **Run the script (CLI Mode):**
+   If you prefer the terminal, you can still run `python main.py`. It will securely prompt you for your keys and target configuration.
+   
+## Usage (Local Web Interface)
 
-## Usage
+The easiest and most powerful way to use HookMiner is through its beautiful Local Web Interface.
 
-1. Open `main.py` in your preferred code editor.
-2. Edit the `TARGET_HANDLES` array with the URLs of the specific Instagram or YouTube profiles you want to mine for hooks.
-3. (Optional) Adjust the `MIN_VIEWS` threshold (default is 1,000,000).
-4. Run the script:
+1. Start the local server:
    ```bash
-   python main.py
+   python app.py
    ```
-
-The script will ask for your keys and begin mining. It will output a `proven_hooks.csv` file inside a newly created `/data` directory.
+2. Open your browser to [http://localhost:5000](http://localhost:5000)
+3. Enter your API Keys intuitively into the glassmorphic Configuration Panel.
+4. Paste your target social media profiles (one per line).
+5. (Optional) Inject specific single video URLs into the "Bypass URLs" field to guarantee their extraction regardless of view count.
+6. Click "Start Extraction Pipeline". The terminal on the right side of your screen will stream the real-time Python output!
+7. When complete, click the "Download CSV" button to save your `proven_hooks.csv` directly.
 
 ## Known Limitations
 - Social media platforms routinely update their DOM structures and bot-protection strategies. If `yt-dlp` stops working for a platform, HookMiner falls back to Apify, which is managed by a dedicated scraping community.
