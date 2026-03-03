@@ -86,7 +86,7 @@ def scan_handles(handles, max_videos_per_handle=10):
                         if entry:
                             video_data = {
                                 'url': entry.get('url') or entry.get('webpage_url'),
-                                'creator': handle,
+                                'creator': entry.get('uploader') or entry.get('channel') or handle,
                                 'title': entry.get('title', 'Unknown Title'),
                                 'views': entry.get('view_count', 0),
                                 'duration': entry.get('duration', 0)

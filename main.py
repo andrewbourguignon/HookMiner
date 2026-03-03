@@ -14,6 +14,12 @@ TARGET_HANDLES = [
     "https://www.youtube.com/@youtube",
 ]
 
+# Add specific individual video URLs here that you want to force-process
+# These videos will bypass the MIN_VIEWS filter and always be transcribed
+TARGET_VIDEOS = [
+    "https://www.youtube.com/watch?v=0w12sXqA-wE",
+]
+
 # The minimum number of views a video needs to be transcribed
 MIN_VIEWS = 1000000
 
@@ -41,6 +47,13 @@ def main():
     print(f"\n--- PHASE 2: FILTERING VIRAL VIDEOS (>={MIN_VIEWS} Views) ---")
     viral_videos = filter_videos(videos, min_views=MIN_VIEWS)
     
+    # 2b. Add the forced TARGET_VIDEOS that bypass the filter
+    if TARGET_VIDEOS:
+        print(f"\n--- PHASE 2b: INJECTING {len(TARGET_VIDEOS)} SPECIFIC TARGET VIDEOS ---")
+        # We can re-use the scanner logic on specific URLs, which will fetch their metadata
+        specific_videos = scan_handles(TARGET_VIDEOS, max_videos_per_handle=1)
+        viral_videos.extend(specific_videos)
+        
     if not viral_videos:
         print("No viral videos found matching the criteria. Exiting.")
         return
