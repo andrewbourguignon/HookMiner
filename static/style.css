@@ -39,6 +39,7 @@ body {
     overflow: hidden;
     pointer-events: none;
 }
+
 .background-orbs::before,
 .background-orbs::after {
     content: '';
@@ -50,11 +51,13 @@ body {
     opacity: 0.15;
     animation: float 20s infinite ease-in-out alternate;
 }
+
 .background-orbs::before {
     background: #6b46c1;
     top: -100px;
     left: -100px;
 }
+
 .background-orbs::after {
     background: #0ea5e9;
     bottom: -100px;
@@ -63,8 +66,13 @@ body {
 }
 
 @keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(100px, 50px) scale(1.1); }
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(100px, 50px) scale(1.1);
+    }
 }
 
 .container {
@@ -129,7 +137,8 @@ header p {
     margin-bottom: 0.4rem;
 }
 
-input, textarea {
+input,
+textarea {
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid var(--panel-border);
@@ -141,7 +150,8 @@ input, textarea {
     transition: all 0.2s ease;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
     outline: none;
     border-color: #38bdf8;
     box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
@@ -216,9 +226,17 @@ textarea {
     border-radius: 50%;
 }
 
-.dot.red { background: #ff5f56; }
-.dot.yellow { background: #ffbd2e; }
-.dot.green { background: #27c93f; }
+.dot.red {
+    background: #ff5f56;
+}
+
+.dot.yellow {
+    background: #ffbd2e;
+}
+
+.dot.green {
+    background: #27c93f;
+}
 
 .terminal-title {
     position: absolute;
@@ -283,18 +301,49 @@ textarea {
     display: none !important;
 }
 
+/* Cost Estimator Styles */
+.cost-estimator {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(43, 48, 60, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.cost-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.cost-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.cost-details {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4) !important;
+    margin-top: 0.25rem;
+}
+
 /* Spinner */
 .btn-loader {
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     border-top-color: white;
     animation: spin 1s ease-in-out infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Responsive */
@@ -302,6 +351,7 @@ textarea {
     .dashboard {
         grid-template-columns: 1fr;
     }
+
     .terminal-panel {
         height: 500px;
     }

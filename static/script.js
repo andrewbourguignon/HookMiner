@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminal = document.getElementById('terminal');
     const btnText = document.querySelector('.btn-text');
     const btnLoader = document.querySelector('.btn-loader');
-    
+
     let eventSource = null;
 
     function appendLog(msg, type = '') {
@@ -15,6 +15,46 @@ document.addEventListener('DOMContentLoaded', () => {
         terminal.scrollTop = terminal.scrollHeight;
     }
 
+    // Cost Estimator Logic
+    const targetHandlesInput = document.getElementById('targetHandles');
+    const scanLimitInput = document.getElementById('scanLimit');
+    const costValueEl = document.getElementById('costValue');
+    const costDetailsEl = document.getElementById('costDetails');
+
+    function updateCostEstimate() {
+        const handlesText = targetHandlesInput.value;
+        const scanLimit = parseInt(scanLimitInput.value) || 10;
+
+        // Count valid Instagram profiles (only IG costs Apify compute units)
+        const handlesList = handlesText.split('\n').map(h => h.trim()).filter(h => h.length > 0);
+        let igCount = 0;
+        for (const h of handlesList) {
+            if (h.includes('instagram.com')) {
+                igCount++;
+            }
+        }
+
+        const totalVideos = igCount * scanLimit;
+        // Apify Instagram Scraper cost is $0.50 per 1000 results
+        const costEstimate = totalVideos * (0.50 / 1000);
+
+        // Update UI
+        costValueEl.textContent = `$${costEstimate.toFixed(3)}`;
+
+        if (igCount === 0) {
+            costDetailsEl.textContent = "Only Instagram profiles incur Apify costs. YouTube/Facebook are free.";
+        } else {
+            costDetailsEl.textContent = `${igCount} IG profile(s) × ${scanLimit} videos = ${totalVideos} total Apify results`;
+        }
+    }
+
+    // Attach listeners
+    targetHandlesInput.addEventListener('input', updateCostEstimate);
+    scanLimitInput.addEventListener('input', updateCostEstimate);
+
+    // Initial calculate
+    updateCostEstimate();
+
     runBtn.addEventListener('click', async () => {
         // Collect inputs
         const apifyToken = document.getElementById('apifyToken').value.trim();
@@ -22,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const handles = document.getElementById('targetHandles').value;
         const videos = document.getElementById('targetVideos').value;
         const minViews = document.getElementById('minViews').value;
+        const scanLimit = document.getElementById('scanLimit').value;
 
         // Basic validation
         if (!apifyToken || !geminiKey) {
@@ -53,12 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     gemini_key: geminiKey,
                     handles: handles,
                     videos: videos,
-                    min_views: minViews
+                    min_views: minViews,
+                    scan_limit: scanLimit
                 })
             });
 
             const data = await response.json();
-            
+
             if (!response.ok) {
                 appendLog(`ERROR: ${data.error}`, 'error');
                 resetUI();
@@ -71,8 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             eventSource = new EventSource('/stream');
-            
-            eventSource.onmessage = function(event) {
+
+            eventSource.onmessage = function (event) {
                 if (event.data === "___DONE___") {
                     eventSource.close();
                     appendLog('Pipeline finished. Ready for download.', 'success');
@@ -88,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             };
 
-            eventSource.onerror = function(err) {
+            eventSource.onerror = function (err) {
                 console.error("EventSource failed:", err);
                 // We keep it open just in case, or close it if it's dead
             };

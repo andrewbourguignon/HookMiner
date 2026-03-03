@@ -20,13 +20,13 @@ class StreamLogger:
     def flush(self):
         sys.__stdout__.flush()
 
-def background_task(apify_token, gemini_key, target_handles, target_videos, min_views):
+def background_task(apify_token, gemini_key, target_handles, target_videos, min_views, scan_limit):
     # Temporarily redirect stdout to our custom logger
     original_stdout = sys.stdout
     sys.stdout = StreamLogger()
     
     try:
-        run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_views)
+        run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_views, scan_limit)
     except Exception as e:
         print(f"\n[ERROR] HookMiner encountered an error: {e}")
     finally:
@@ -57,6 +57,12 @@ def run_hookminer():
     except ValueError:
         min_views = 1000000
 
+    scan_limit_str = data.get('scan_limit', '10')
+    try:
+        scan_limit = int(scan_limit_str)
+    except ValueError:
+        scan_limit = 10
+
     if not apify_token or not gemini_key:
         return jsonify({"error": "Both Apify and Gemini API keys are required."}), 400
 
@@ -68,7 +74,7 @@ def run_hookminer():
         log_queue.get()
 
     # Start the pipeline in a background thread
-    thread = threading.Thread(target=background_task, args=(apify_token, gemini_key, target_handles, target_videos, min_views))
+    thread = threading.Thread(target=background_task, args=(apify_token, gemini_key, target_handles, target_videos, min_views, scan_limit))
     thread.daemon = True
     thread.start()
     

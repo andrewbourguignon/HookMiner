@@ -23,7 +23,10 @@ TARGET_VIDEOS = [
 # The minimum number of views a video needs to be transcribed
 MIN_VIEWS = 1000000
 
-def run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_views):
+# The maximum number of videos to scan per profile
+SCAN_LIMIT = 10
+
+def run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_views, scan_limit):
     print("Starting HookMiner execution...")
     
     os.environ["APIFY_API_TOKEN"] = apify_token
@@ -37,7 +40,7 @@ def run_pipeline(apify_token, gemini_key, target_handles, target_videos, min_vie
     print("\n--- PHASE 1: SCANNING HANDLES ---")
     videos = []
     if target_handles:
-        videos = scan_handles(target_handles, max_videos_per_handle=10)
+        videos = scan_handles(target_handles, max_videos_per_handle=scan_limit)
         print(f"Total videos scanned: {len(videos)}")
     
     # 2. Filter videos
@@ -104,7 +107,7 @@ def main():
     if not gemini_key:
         gemini_key = getpass.getpass("Enter your Gemini API Key (input hidden): ")
         
-    run_pipeline(apify_token, gemini_key, TARGET_HANDLES, TARGET_VIDEOS, MIN_VIEWS)
+    run_pipeline(apify_token, gemini_key, TARGET_HANDLES, TARGET_VIDEOS, MIN_VIEWS, SCAN_LIMIT)
 
 if __name__ == "__main__":
     main()
