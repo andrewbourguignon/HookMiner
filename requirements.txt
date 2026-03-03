@@ -1,0 +1,4 @@
+apify-client
+yt-dlp
+pandas
+google-genai
