@@ -10,8 +10,7 @@ from src.generator import export_to_csv
 
 # Add the specific Instagram or TikTok handles here
 TARGET_HANDLES = [
-    "https://www.instagram.com/instagram/", # Generic example, replace with your targets
-    "https://www.youtube.com/@youtube",
+    "https://www.instagram.com/ryanserhant/",
 ]
 
 # Add specific individual video URLs here that you want to force-process
